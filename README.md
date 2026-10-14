@@ -2,7 +2,7 @@
 
 [![Java](https://img.shields.io/badge/Java-Servlets-orange?logo=openjdk)](https://www.java.com/) [![MySQL](https://img.shields.io/badge/Database-MySQL-4479A1?logo=mysql)](https://www.mysql.com/) [![Tomcat](https://img.shields.io/badge/Server-Apache%20Tomcat%209-F8DC75?logo=apachetomcat)](https://tomcat.apache.org/) [![GitHub](https://img.shields.io/badge/Source-GitHub-181717?logo=github)](https://github.com/kandisaikishore/student_management_system)
 
-A beginner-friendly **Java web application for managing student/user records**. It uses Java Servlets to handle browser requests, JDBC to communicate with MySQL, and HTML pages for the user interface. The code is organized as an Eclipse Dynamic Web Project.
+A beginner-friendly **Java web application for managing student/user records** using Java Servlets, JDBC, and MySQL. It demonstrates browser forms, session-based profile workflows, and CRUD-style record operations in an Eclipse Dynamic Web Project. It uses Java Servlets to handle browser requests, JDBC to communicate with MySQL, and HTML pages for the user interface. The code is organized as an Eclipse Dynamic Web Project.
 
 The goal of this project is to demonstrate how a traditional Java web application connects a browser form to a servlet and then to a relational database.
 
