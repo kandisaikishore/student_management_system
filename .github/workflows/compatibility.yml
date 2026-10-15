@@ -41,3 +41,11 @@ jobs:
           mapfile -d '' sources < <(find src/main/java -type f -name '*.java' -print0)
           mkdir -p build-classes
           javac -encoding UTF-8 -cp 'src/main/webapp/WEB-INF/lib/javax.servlet-api-3.1.0.jar' -d build-classes "${sources[@]}"
+      - name: Run password hashing regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test_file=src/test/java/student_management_system/PasswordUtilSmokeTest.java
+          test -s "$test_file"
+          javac -encoding UTF-8 -cp build-classes -d build-classes "$test_file"
+          java -cp build-classes student_management_system.PasswordUtilSmokeTest
