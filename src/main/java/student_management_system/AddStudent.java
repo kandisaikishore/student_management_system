@@ -49,7 +49,7 @@ public class AddStudent extends HttpServlet {
 			statement.setInt(1,id);
 			statement.setString(2, name);
 			statement.setString(3, email);
-			statement.setString(4, pwd);
+			statement.setString(4, PasswordUtil.hash(pwd));
 			statement.setLong(5, phNo);
 			statement.setString(6, role);
 			String sql2="SELECT * FROM users WHERE id=?";
