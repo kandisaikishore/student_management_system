@@ -1,4 +1,4 @@
-name: Java compatibility checks
+name: Servlet application compatibility checks
 
 on:
   push:
@@ -13,9 +13,9 @@ permissions:
   contents: read
 
 jobs:
-  java-compatibility:
+  servlet-compatibility:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -26,14 +26,13 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.java-version }}
-      - name: Locate Java files
+      - name: Verify servlet API dependency
+        run: test -s src/main/webapp/WEB-INF/lib/javax.servlet-api-3.1.0.jar
+      - name: Compile servlet sources against bundled API
+        shell: bash
         run: |
-          set -eu
-          find . -type f -name '*.java' -not -path './.git/*' -not -path './build-classes/*' > /tmp/java-sources.txt
-          test -s /tmp/java-sources.txt
-          cat /tmp/java-sources.txt
-      - name: Compile Java source files
-        run: |
-          set -eu
+          set -euo pipefail
+          mapfile -d '' sources < <(find . -type f -name '*.java' -not -path './.git/*' -not -path './build-classes/*' -print0)
+          test "${#sources[@]}" -gt 0
           mkdir -p build-classes
-          javac -encoding UTF-8 -d build-classes @/tmp/java-sources.txt
+          javac -encoding UTF-8 -cp 'src/main/webapp/WEB-INF/lib/*' -d build-classes "${sources[@]}"
