@@ -45,7 +45,6 @@ public class Profile extends HttpServlet {
         out.println("<label>Number <input type=\"tel\" name=\"number\" value=\"" + number + "\" required></label><br>");
         out.println("<label>Role <input type=\"text\" name=\"role\" value=\"" + role + "\" required></label><br>");
         out.println("<button type=\"submit\">Update profile</button></form>");
-        out.println("<p><a href=\"delete?id=" + id + "\">Delete account</a></p>");
         out.println("<p><a href=\"homepage\">Back to home</a></p></body></html>");
     }
 }
