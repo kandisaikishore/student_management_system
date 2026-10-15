@@ -31,9 +31,9 @@ Based on the checked-in source, the application includes these workflows:
 - **Add student:** insert a record into the `users` table.
 - **Find student:** look up a record by ID.
 - **Update student:** update a record's name, email, password, phone number, and role.
-- **Delete student:** a delete form is included; see the note below about verifying the corresponding servlet.
+- **Delete student:** intentionally unavailable in the UI because the repository has no matching delete servlet.
 
-> **Important:** The repository's current tree includes a `deleteStudent.html` page, but the matching delete servlet was not present in the source tree reviewed. Verify or implement that handler before relying on deletion.
+> **Important:** The repository contains a legacy `deleteStudent.html` page, but no matching delete servlet. The home/profile navigation no longer exposes delete actions until a handler is implemented and tested.
 
 ## How it works
 
@@ -83,7 +83,7 @@ student_management_system/
 │           ├── findStudent.html
 │           ├── deleteStudent.html
 │           └── updateStudent.html
-├── build/classes/                      # Generated class files (if retained)
+├── src/test/java/student_management_system/PasswordUtilSmokeTest.java # Password regression checks\n├── build/classes/                      # Generated class files (if retained)
 ├── .classpath                          # Eclipse classpath/runtime settings
 └── .project                             # Eclipse project metadata
 ```
@@ -175,7 +175,7 @@ This repository currently has Eclipse Dynamic Web Project metadata but no Maven 
 | `addStudent.html` → `/addStudent` | Add a record |
 | `findStudent.html` → `/find` | Find a record by ID |
 | `updateStudent.html` → `/updateStudent` | Update a record by ID |
-| `deleteStudent.html` → `/deleteStudent` | Delete form; handler needs verification |
+| `deleteStudent.html` | Legacy form; not linked until a delete handler is implemented |
 
 The servlet mappings are declared with `@WebServlet` annotations in the Java classes.
 
@@ -214,10 +214,10 @@ This project is useful for learning, but it should **not be deployed publicly or
 ## Ideas for improvement
 
 - Centralize database connectivity and configuration
-- Use password hashing, validation, and role-based authorization
+- Extend authorization checks to every data-changing route and add role-based authorization
 - Separate persistence logic into DAO/repository classes
 - Use POST/redirect/GET patterns for state-changing actions
-- Add automated tests for authentication and CRUD workflows
+- Expand automated tests beyond password hashing to authentication and CRUD workflows
 - Add consistent UI styling, accessible labels, and informative messages
 - Add a reproducible WAR build, deployment guide, and CI checks
 
