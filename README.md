@@ -128,7 +128,13 @@ Use this schema as a development example and confirm it against each SQL stateme
 
 ### Configure database credentials
 
-The servlet files currently embed a local JDBC URL that includes `root` and a password in source code. Before running the application, configure a dedicated local MySQL user and update the connection configuration appropriately. **Do not use the root account or commit real credentials in a shared repository.** A follow-up improvement would move these settings into environment variables or an external configuration file.
+The servlets read database settings from environment variables:
+
+- `DB_URL` (optional; defaults to `jdbc:mysql://localhost:3306/student_management_system`)
+- `DB_USER` (required)
+- `DB_PASSWORD` (required)
+
+Configure these variables in the environment used by Tomcat/Eclipse. Use a dedicated MySQL account with only the privileges the application needs; do not use the root account or commit real credentials. If either credential variable is missing, database-backed requests return a configuration error rather than using hard-coded credentials.
 
 ## Run the project
 
@@ -197,9 +203,9 @@ The servlet mappings are declared with `@WebServlet` annotations in the Java cla
 
 This project is useful for learning, but it should **not be deployed publicly or used with real student data as-is**. The reviewed source has several security and reliability risks that should be addressed before broader use:
 
-- Passwords appear to be stored and compared as plain text. Use a strong password-hashing algorithm such as BCrypt and never store raw passwords in session state.
-- Database credentials are embedded in servlet source. Move secrets outside source control and use a least-privilege database account.
-- Some operations, including login and record lookup, use HTTP GET for sensitive or state-changing actions. Use POST where appropriate and add CSRF protection for state changes.
+- New passwords are stored using salted PBKDF2-HMAC-SHA256 hashes. Existing legacy plain-text passwords are verified only during login and migrated to a hash after a successful login; accounts that have not logged in again may still have legacy values in the database. Never store raw passwords in session state.
+- Database credentials are read from environment variables; keep them out of source control and use a least-privilege database account.
+- Login, student creation, and update operations use POST. Add CSRF protection to state-changing actions before exposing the application publicly.
 - Server-side validation and consistent error handling are limited; avoid showing stack traces or internal details to users.
 - Session lifecycle and authorization checks should be strengthened, especially for add/update/delete actions.
 - Dynamic HTML output should be safely escaped to prevent cross-site scripting (XSS).
