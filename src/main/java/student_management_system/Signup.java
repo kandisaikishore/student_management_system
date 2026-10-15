@@ -35,8 +35,13 @@ public class Signup extends HttpServlet{
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			
-			String url="jdbc:mysql://localhost:3306/student_management_system?user=root&password=root";
-			connection=DriverManager.getConnection(url);
+			String url=System.getenv().getOrDefault("DB_URL", "jdbc:mysql://localhost:3306/student_management_system");
+			String dbUser=System.getenv("DB_USER");
+			String dbPassword=System.getenv("DB_PASSWORD");
+			if(dbUser==null || dbPassword==null) {
+				throw new SQLException("DB_USER and DB_PASSWORD must be configured");
+			}
+			connection=DriverManager.getConnection(url, dbUser, dbPassword);
 			
 			String sql="INSERT INTO users VALUES(?,?,?,?,?,?)";
 			preparedStatement=connection.prepareStatement(sql);
