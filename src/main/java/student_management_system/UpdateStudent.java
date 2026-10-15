@@ -52,7 +52,7 @@ public class UpdateStudent extends HttpServlet {
 			statement=connection.prepareStatement(update);
 			statement.setString(1, name);
 			statement.setString(2, email);
-			statement.setString(3, password);
+			statement.setString(3, PasswordUtil.hash(password));
 			statement.setLong(4, number);
 			statement.setString(5, role);
 			statement.setInt(6, id);
