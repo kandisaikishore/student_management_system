@@ -49,7 +49,7 @@ public class Signup extends HttpServlet{
 			preparedStatement.setInt(1, Integer.parseInt(id));
 			preparedStatement.setString(2, name);
 			preparedStatement.setString(3, email);
-			preparedStatement.setString(4, password);
+			preparedStatement.setString(4, PasswordUtil.hash(password));
 			preparedStatement.setLong(5, Long.parseLong(number));
 			preparedStatement.setString(6, role);
 			
