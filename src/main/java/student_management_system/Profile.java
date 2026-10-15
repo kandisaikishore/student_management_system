@@ -9,32 +9,43 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 @WebServlet("/profile")
 public class Profile extends HttpServlet {
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		HttpSession session=req.getSession();;
-		int id=(int)session.getAttribute("id");
-		String name=(String)session.getAttribute("name");
-		String email=(String)session.getAttribute("email");
-		String password=(String)session.getAttribute("password");
-		long number=(long)session.getAttribute("number");
-		String role=(String)session.getAttribute("role");
-		
-		PrintWriter out=resp.getWriter();
-		out.println("<html>");
-		out.println("<body>");
-			out.println("<form action='update' method='post'>");
-				out.println("<input type='hidden' name='id' value='"+id+"'><br>");
-				out.println("Name: <input type='text' name='name' value='"+name+"'><br>");
-				out.println("Email: <input type='email' name='email' value='"+email+"'><br>");
-				out.println("Password: <input type='password' name='password' value='"+password+"'><br>");
-				out.println("Number: <input type='tel' name='number' value='"+number+"'><br>");
-				out.println("Role: <input type='text' name='role' value='"+role+"'><br>");
-				out.println("<a href='update'><button>Update</button></a>");				
-			out.println("</form>");
-			out.println("<a href='delete?id="+id+"'><button>delete</button></a>");				
-		out.println("</body>");
-		out.println("</html>");
-	}
+    private static final long serialVersionUID = 1L;
+
+    private static String escapeHtml(Object value) {
+        if (value == null) return "";
+        return value.toString().replace("&", "&amp;").replace("<", "&lt;")
+                .replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&#x27;");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html; charset=UTF-8");
+        resp.setHeader("Cache-Control", "no-store");
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("id") == null) {
+            resp.sendRedirect("login.html");
+            return;
+        }
+
+        String id = escapeHtml(session.getAttribute("id"));
+        String name = escapeHtml(session.getAttribute("name"));
+        String email = escapeHtml(session.getAttribute("email"));
+        String number = escapeHtml(session.getAttribute("number"));
+        String role = escapeHtml(session.getAttribute("role"));
+
+        PrintWriter out = resp.getWriter();
+        out.println("<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Profile</title></head><body>");
+        out.println("<h1>Profile</h1>");
+        out.println("<form action=\"update\" method=\"post\">");
+        out.println("<label>Name <input type=\"text\" name=\"name\" value=\"" + name + "\" required></label><br>");
+        out.println("<label>Email <input type=\"email\" name=\"email\" value=\"" + email + "\" required></label><br>");
+        out.println("<label>Number <input type=\"tel\" name=\"number\" value=\"" + number + "\" required></label><br>");
+        out.println("<label>Role <input type=\"text\" name=\"role\" value=\"" + role + "\" required></label><br>");
+        out.println("<button type=\"submit\">Update profile</button></form>");
+        out.println("<p><a href=\"delete?id=" + id + "\">Delete account</a></p>");
+        out.println("<p><a href=\"homepage\">Back to home</a></p></body></html>");
+    }
 }
