@@ -45,6 +45,12 @@ public class Login extends HttpServlet {
             return;
         }
 
+        int id;
+        String name;
+        String storedEmail;
+        String storedPassword;
+        long number;
+        String role;
         String sql = "SELECT id, name, email, password, number, role FROM users WHERE email = ?";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -52,24 +58,47 @@ public class Login extends HttpServlet {
                  PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, email.trim());
                 try (ResultSet result = statement.executeQuery()) {
-                    if (!result.next() || !password.equals(result.getString("password"))) {
+                    if (!result.next()) {
                         resp.sendRedirect("login.html?error=invalid");
                         return;
                     }
-
-                    HttpSession previous = req.getSession(false);
-                    if (previous != null) {
-                        previous.invalidate();
-                    }
-                    HttpSession session = req.getSession(true);
-                    session.setAttribute("id", result.getInt("id"));
-                    session.setAttribute("name", result.getString("name"));
-                    session.setAttribute("email", result.getString("email"));
-                    session.setAttribute("number", result.getLong("number"));
-                    session.setAttribute("role", result.getString("role"));
-                    resp.sendRedirect("homepage");
+                    id = result.getInt("id");
+                    name = result.getString("name");
+                    storedEmail = result.getString("email");
+                    storedPassword = result.getString("password");
+                    number = result.getLong("number");
+                    role = result.getString("role");
                 }
             }
+
+            if (!PasswordUtil.verify(password, storedPassword)) {
+                resp.sendRedirect("login.html?error=invalid");
+                return;
+            }
+
+            // Migrate legacy plain-text passwords after a successful login.
+            if (!PasswordUtil.isHashed(storedPassword)) {
+                try (Connection connection = DriverManager.getConnection(url, dbUser, dbPassword);
+                     PreparedStatement update = connection.prepareStatement(
+                             "UPDATE users SET password = ? WHERE id = ? AND password = ?")) {
+                    update.setString(1, PasswordUtil.hash(password));
+                    update.setInt(2, id);
+                    update.setString(3, storedPassword);
+                    update.executeUpdate();
+                }
+            }
+
+            HttpSession previous = req.getSession(false);
+            if (previous != null) {
+                previous.invalidate();
+            }
+            HttpSession session = req.getSession(true);
+            session.setAttribute("id", id);
+            session.setAttribute("name", name);
+            session.setAttribute("email", storedEmail);
+            session.setAttribute("number", number);
+            session.setAttribute("role", role);
+            resp.sendRedirect("homepage");
         } catch (ClassNotFoundException | SQLException e) {
             getServletContext().log("Login failed due to a server/database error.", e);
             if (!resp.isCommitted()) {
