@@ -38,7 +38,6 @@ public class HomePage extends HttpServlet {
         out.println("<li><a href=\"profile\">Profile</a></li>");
         out.println("<li><a href=\"addStudent.html\">Add Student</a></li>");
         out.println("<li><a href=\"findStudent.html\">Find Student</a></li>");
-        out.println("<li><a href=\"deleteStudent.html\">Remove Student</a></li>");
         out.println("<li><a href=\"updateStudent.html\">Update Student Details</a></li>");
         out.println("</ul></nav>");
         out.println("<form action=\"logout\" method=\"post\"><button type=\"submit\">Logout</button></form>");
