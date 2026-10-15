@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Management System - Login</title>
 </head>
 <body>
-	<div align="center">
-		<form action="login">
-			Email:<input type="email" name="email" value="ram@gmail.com">
-			<br>
-			Password:<input type="password" name="password" value="Sita@123">
-			<br>
-			<button>Login</button>
-		</form>
-	</div>
+  <main>
+    <h1>Login</h1>
+    <form action="login" method="post" autocomplete="on">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" autocomplete="username" required>
+      <br>
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" autocomplete="current-password" required>
+      <br>
+      <button type="submit">Login</button>
+    </form>
+    <p><a href="signup.html">Create an account</a></p>
+  </main>
 </body>
 </html>
