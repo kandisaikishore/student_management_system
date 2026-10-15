@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/addStudent")
 public class AddStudent extends HttpServlet {
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //		String adminName=req.getParameter("adminName");
 //		int adminId=Integer.parseInt(req.getParameter("adminId"));
 		int id=Integer.parseInt(req.getParameter("id"));
