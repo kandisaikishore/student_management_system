@@ -26,13 +26,18 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.java-version }}
-      - name: Verify servlet API dependency
-        run: test -s src/main/webapp/WEB-INF/lib/javax.servlet-api-3.1.0.jar
+      - name: Locate servlet API and Java sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s src/main/webapp/WEB-INF/lib/javax.servlet-api-3.1.0.jar
+          mapfile -d '' sources < <(find src/main/java -type f -name '*.java' -print0)
+          test "${#sources[@]}" -gt 0
+          printf 'Found %s servlet source files\n' "${#sources[@]}"
       - name: Compile servlet sources against bundled API
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -d '' sources < <(find . -type f -name '*.java' -not -path './.git/*' -not -path './build-classes/*' -print0)
-          test "${#sources[@]}" -gt 0
+          mapfile -d '' sources < <(find src/main/java -type f -name '*.java' -print0)
           mkdir -p build-classes
-          javac -encoding UTF-8 -cp 'src/main/webapp/WEB-INF/lib/*' -d build-classes "${sources[@]}"
+          javac -encoding UTF-8 -cp 'src/main/webapp/WEB-INF/lib/javax.servlet-api-3.1.0.jar' -d build-classes "${sources[@]}"
